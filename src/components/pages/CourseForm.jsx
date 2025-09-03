@@ -22,7 +22,7 @@ const CourseForm = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   
-  const [formData, setFormData] = useState({
+const [formData, setFormData] = useState({
     name: "",
     code: "",
     credits: 3,

@@ -85,9 +85,9 @@ const QuickAddModal = ({ isOpen, onClose, courses = [], onAddAssignment }) => {
     const input = value.toLowerCase();
     
     // Extract course hints
-    courses.forEach(course => {
+courses.forEach(course => {
       if (input.includes(course.name.toLowerCase()) || input.includes(course.code.toLowerCase())) {
-        setFormData(prev => ({ ...prev, courseId: course.Id }));
+        setFormData(prev => ({ ...prev, courseId: course.Id.toString() }));
       }
     });
     

@@ -1,16 +1,16 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
-import Button from "@/components/atoms/Button";
-import AssignmentList from "@/components/organisms/AssignmentList";
-import QuickAddModal from "@/components/organisms/QuickAddModal";
-import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
-import Empty from "@/components/ui/Empty";
-import ApperIcon from "@/components/ApperIcon";
 import assignmentService from "@/services/api/assignmentService";
 import courseService from "@/services/api/courseService";
+import ApperIcon from "@/components/ApperIcon";
+import QuickAddModal from "@/components/organisms/QuickAddModal";
+import AssignmentList from "@/components/organisms/AssignmentList";
+import Error from "@/components/ui/Error";
+import Empty from "@/components/ui/Empty";
+import Loading from "@/components/ui/Loading";
+import Button from "@/components/atoms/Button";
 
 const Assignments = () => {
   const navigate = useNavigate();
@@ -25,22 +25,13 @@ const Assignments = () => {
       setLoading(true);
       setError("");
       
-      const [assignmentsData, coursesData] = await Promise.all([
+const [assignmentsData, coursesData] = await Promise.all([
         assignmentService.getAll(),
         courseService.getAll()
       ]);
       
-      // Enhance assignments with course information
-      const enhancedAssignments = assignmentsData.map(assignment => {
-        const course = coursesData.find(c => c.Id === parseInt(assignment.courseId));
-        return {
-          ...assignment,
-          courseName: course?.name || "Unknown Course",
-          courseColor: course?.color || "#5B5FDE"
-        };
-      });
-      
-      setAssignments(enhancedAssignments);
+      // Assignments now come with course info from database
+      setAssignments(assignmentsData);
       setCourses(coursesData);
     } catch (err) {
       setError(err.message || "Failed to load assignments");
@@ -73,31 +64,22 @@ const Assignments = () => {
     }
   };
 
-  const handleAddAssignment = async (assignmentData) => {
+const handleAddAssignment = async (assignmentData) => {
     try {
       // Find course info
       const course = courses.find(c => c.Id === parseInt(assignmentData.courseId));
-      
+
       const enhancedData = {
         ...assignmentData,
         courseName: course?.name || "Unknown Course",
         courseColor: course?.color || "#5B5FDE"
       };
-      
-      const newAssignment = await assignmentService.create(enhancedData);
-      
-      setAssignments(prev => [
-        {
-          ...newAssignment,
-          courseName: enhancedData.courseName,
-          courseColor: enhancedData.courseColor
-        },
-        ...prev
-      ]);
-      
-      return newAssignment;
-    } catch (err) {
-      throw new Error("Failed to add assignment");
+
+      await assignmentService.create(enhancedData);
+      toast.success("Assignment added successfully!");
+      loadData(); // Reload data to show new assignment
+    } catch (error) {
+      toast.error("Failed to add assignment");
     }
   };
 

@@ -24,9 +24,14 @@ const UpcomingAssignments = ({ assignments = [] }) => {
     }
   };
 
-  const handleMarkComplete = (assignmentId) => {
-    // TODO: Implement mark complete functionality
-    console.log("Mark complete:", assignmentId);
+const handleMarkComplete = async (assignmentId) => {
+    try {
+      const { toggleComplete } = await import('@/services/api/assignmentService');
+      await toggleComplete(assignmentId);
+      // Note: Parent component should handle state updates via props
+    } catch (error) {
+      console.error("Failed to mark assignment as complete:", error);
+    }
   };
 
   return (

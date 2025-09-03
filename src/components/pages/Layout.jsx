@@ -1,11 +1,12 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import assignmentService from "@/services/api/assignmentService";
+import courseService from "@/services/api/courseService";
+import QuickAddModal from "@/components/organisms/QuickAddModal";
 import Header from "@/components/organisms/Header";
 import Sidebar from "@/components/organisms/Sidebar";
-import QuickAddModal from "@/components/organisms/QuickAddModal";
-import courseService from "@/services/api/courseService";
-import assignmentService from "@/services/api/assignmentService";
+import Error from "@/components/ui/Error";
 
 const Layout = () => {
   const [showQuickAdd, setShowQuickAdd] = useState(false);
@@ -21,7 +22,7 @@ const Layout = () => {
       console.error("Failed to load courses:", error);
       setShowQuickAdd(true); // Open anyway with empty courses
     }
-  };
+};
 
   const handleAddAssignment = async (assignmentData) => {
     try {
@@ -33,11 +34,14 @@ const Layout = () => {
         courseName: course?.name || "Unknown Course",
         courseColor: course?.color || "#5B5FDE"
       };
-      
+
       const newAssignment = await assignmentService.create(enhancedData);
+      toast.success("Assignment added successfully!");
       return newAssignment;
-    } catch (err) {
-      throw new Error("Failed to add assignment");
+    } catch (error) {
+      console.error("Failed to add assignment:", error);
+      toast.error("Failed to add assignment");
+      throw error;
     }
   };
 

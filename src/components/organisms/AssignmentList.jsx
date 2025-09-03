@@ -27,7 +27,7 @@ const AssignmentList = ({ assignments = [], onAssignmentClick, onToggleComplete 
     }
   };
 
-  const isOverdue = (dueDate) => {
+const isOverdue = (dueDate) => {
     return new Date(dueDate) < new Date() && !assignments.find(a => a.dueDate === dueDate)?.completed;
   };
 

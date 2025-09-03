@@ -29,7 +29,7 @@ const GradeTracker = ({ courses = [] }) => {
   const calculateOverallGPA = () => {
     if (courses.length === 0) return 0;
     
-    const totalPoints = courses.reduce((sum, course) => {
+const totalPoints = courses.reduce((sum, course) => {
       const gradePoints = Math.max(0, (course.currentGrade - 50) / 10);
       return sum + (gradePoints * course.credits);
     }, 0);

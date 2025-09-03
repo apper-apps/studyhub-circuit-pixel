@@ -1,80 +1,343 @@
-import studySessionsData from "@/services/mockData/studySessions.json";
-
 class StudySessionService {
   constructor() {
-    this.studySessions = [...studySessionsData];
+    // Initialize ApperClient
+    const { ApperClient } = window.ApperSDK;
+    this.apperClient = new ApperClient({
+      apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+      apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+    });
+    this.tableName = "study_session_c";
   }
 
   async getAll() {
-    await new Promise(resolve => setTimeout(resolve, 250));
-    return [...this.studySessions];
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "course_id_c" } },
+          { field: { Name: "course_name_c" } },
+          { field: { Name: "course_color_c" } },
+          { field: { Name: "date_c" } },
+          { field: { Name: "duration_c" } },
+          { field: { Name: "notes_c" } }
+        ]
+      };
+
+      const response = await this.apperClient.fetchRecords(this.tableName, params);
+
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data?.map(session => ({
+        Id: session.Id,
+        courseId: session.course_id_c?.Id || session.course_id_c,
+        courseName: session.course_name_c,
+        courseColor: session.course_color_c,
+        date: session.date_c,
+        duration: session.duration_c,
+        notes: session.notes_c
+      })) || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching study sessions:", error.response.data.message);
+      } else {
+        console.error(error);
+      }
+      return [];
+    }
   }
 
   async getById(id) {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    const session = this.studySessions.find(session => session.Id === parseInt(id));
-    if (!session) {
-      throw new Error("Study session not found");
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "course_id_c" } },
+          { field: { Name: "course_name_c" } },
+          { field: { Name: "course_color_c" } },
+          { field: { Name: "date_c" } },
+          { field: { Name: "duration_c" } },
+          { field: { Name: "notes_c" } }
+        ]
+      };
+
+      const response = await this.apperClient.getRecordById(this.tableName, parseInt(id), params);
+
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (!response.data) {
+        throw new Error("Study session not found");
+      }
+
+      const session = response.data;
+      return {
+        Id: session.Id,
+        courseId: session.course_id_c?.Id || session.course_id_c,
+        courseName: session.course_name_c,
+        courseColor: session.course_color_c,
+        date: session.date_c,
+        duration: session.duration_c,
+        notes: session.notes_c
+      };
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error(`Error fetching study session with ID ${id}:`, error.response.data.message);
+      } else {
+        console.error(error);
+      }
+      throw error;
     }
-    return { ...session };
   }
 
   async create(sessionData) {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    const newId = Math.max(...this.studySessions.map(s => s.Id)) + 1;
-    const newSession = {
-      Id: newId,
-      ...sessionData,
-      date: new Date(sessionData.date).toISOString()
-    };
-    
-    this.studySessions.push(newSession);
-    return { ...newSession };
+    try {
+      const params = {
+        records: [{
+          Name: `Study Session - ${sessionData.courseName}`,
+          course_id_c: parseInt(sessionData.courseId),
+          course_name_c: sessionData.courseName || "",
+          course_color_c: sessionData.courseColor || "#5B5FDE",
+          date_c: sessionData.date,
+          duration_c: sessionData.duration || 0,
+          notes_c: sessionData.notes || ""
+        }]
+      };
+
+      const response = await this.apperClient.createRecord(this.tableName, params);
+
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        const failedRecords = response.results.filter(result => !result.success);
+
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create study session: ${JSON.stringify(failedRecords)}`);
+          failedRecords.forEach(record => {
+            if (record.message) throw new Error(record.message);
+          });
+        }
+
+        if (successfulRecords.length > 0) {
+          const session = successfulRecords[0].data;
+          return {
+            Id: session.Id,
+            courseId: session.course_id_c?.Id || session.course_id_c,
+            courseName: session.course_name_c,
+            courseColor: session.course_color_c,
+            date: session.date_c,
+            duration: session.duration_c,
+            notes: session.notes_c
+          };
+        }
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error creating study session:", error.response.data.message);
+      } else {
+        console.error(error);
+      }
+      throw error;
+    }
   }
 
   async update(id, updateData) {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    const index = this.studySessions.findIndex(session => session.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error("Study session not found");
+    try {
+      const params = {
+        records: [{
+          Id: parseInt(id),
+          Name: updateData.courseName ? `Study Session - ${updateData.courseName}` : undefined,
+          course_id_c: updateData.courseId ? parseInt(updateData.courseId) : undefined,
+          course_name_c: updateData.courseName,
+          course_color_c: updateData.courseColor,
+          date_c: updateData.date,
+          duration_c: updateData.duration,
+          notes_c: updateData.notes
+        }]
+      };
+
+      const response = await this.apperClient.updateRecord(this.tableName, params);
+
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const successfulUpdates = response.results.filter(result => result.success);
+        const failedUpdates = response.results.filter(result => !result.success);
+
+        if (failedUpdates.length > 0) {
+          console.error(`Failed to update study session: ${JSON.stringify(failedUpdates)}`);
+          failedUpdates.forEach(record => {
+            if (record.message) throw new Error(record.message);
+          });
+        }
+
+        if (successfulUpdates.length > 0) {
+          const session = successfulUpdates[0].data;
+          return {
+            Id: session.Id,
+            courseId: session.course_id_c?.Id || session.course_id_c,
+            courseName: session.course_name_c,
+            courseColor: session.course_color_c,
+            date: session.date_c,
+            duration: session.duration_c,
+            notes: session.notes_c
+          };
+        }
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error updating study session:", error.response.data.message);
+      } else {
+        console.error(error);
+      }
+      throw error;
     }
-    
-    this.studySessions[index] = { ...this.studySessions[index], ...updateData };
-    return { ...this.studySessions[index] };
   }
 
   async delete(id) {
-    await new Promise(resolve => setTimeout(resolve, 250));
-    
-    const index = this.studySessions.findIndex(session => session.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error("Study session not found");
+    try {
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
+
+      const response = await this.apperClient.deleteRecord(this.tableName, params);
+
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return { success: true };
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error deleting study session:", error.response.data.message);
+      } else {
+        console.error(error);
+      }
+      throw error;
     }
-    
-    this.studySessions.splice(index, 1);
-    return { success: true };
   }
 
   async getByCourse(courseId) {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    
-    return this.studySessions.filter(session => session.courseId === courseId.toString());
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "course_id_c" } },
+          { field: { Name: "course_name_c" } },
+          { field: { Name: "course_color_c" } },
+          { field: { Name: "date_c" } },
+          { field: { Name: "duration_c" } },
+          { field: { Name: "notes_c" } }
+        ],
+        where: [
+          {
+            FieldName: "course_id_c",
+            Operator: "EqualTo",
+            Values: [parseInt(courseId)]
+          }
+        ]
+      };
+
+      const response = await this.apperClient.fetchRecords(this.tableName, params);
+
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data?.map(session => ({
+        Id: session.Id,
+        courseId: session.course_id_c?.Id || session.course_id_c,
+        courseName: session.course_name_c,
+        courseColor: session.course_color_c,
+        date: session.date_c,
+        duration: session.duration_c,
+        notes: session.notes_c
+      })) || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching study sessions by course:", error.response.data.message);
+      } else {
+        console.error(error);
+      }
+      return [];
+    }
   }
 
   async getRecentSessions(limit = 5) {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    
-    return this.studySessions
-      .sort((a, b) => new Date(b.date) - new Date(a.date))
-      .slice(0, limit);
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "course_id_c" } },
+          { field: { Name: "course_name_c" } },
+          { field: { Name: "course_color_c" } },
+          { field: { Name: "date_c" } },
+          { field: { Name: "duration_c" } },
+          { field: { Name: "notes_c" } }
+        ],
+        orderBy: [
+          {
+            fieldName: "date_c",
+            sorttype: "DESC"
+          }
+        ],
+        pagingInfo: {
+          limit: limit,
+          offset: 0
+        }
+      };
+
+      const response = await this.apperClient.fetchRecords(this.tableName, params);
+
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data?.map(session => ({
+        Id: session.Id,
+        courseId: session.course_id_c?.Id || session.course_id_c,
+        courseName: session.course_name_c,
+        courseColor: session.course_color_c,
+        date: session.date_c,
+        duration: session.duration_c,
+        notes: session.notes_c
+      })) || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching recent study sessions:", error.response.data.message);
+      } else {
+        console.error(error);
+      }
+      return [];
+    }
   }
 
   async getTotalStudyTime() {
-    await new Promise(resolve => setTimeout(resolve, 150));
-    
-    return this.studySessions.reduce((total, session) => total + session.duration, 0);
+    try {
+      const sessions = await this.getAll();
+      return sessions.reduce((total, session) => total + (session.duration || 0), 0);
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error calculating total study time:", error.response.data.message);
+      } else {
+        console.error(error);
+      }
+      return 0;
+    }
   }
 }
 

@@ -47,7 +47,7 @@ const Dashboard = () => {
 
   // Calculate dashboard stats
   const stats = {
-    gpa: courses.length > 0 
+gpa: courses.length > 0 
       ? (courses.reduce((sum, course) => sum + (course.currentGrade / 100 * 4), 0) / courses.length).toFixed(2)
       : "0.00",
     dueThisWeek: assignments.filter(a => {
