@@ -1,0 +1,47 @@
+[
+  {
+    "Id": 1,
+    "courseId": "1",
+    "courseName": "Advanced Mathematics",
+    "courseColor": "#5B5FDE",
+    "date": "2024-12-16T14:00:00Z",
+    "duration": 120,
+    "notes": "Focused on differential equations and integration techniques. Made good progress on problem set."
+  },
+  {
+    "Id": 2,
+    "courseId": "2",
+    "courseName": "Physics Laboratory",
+    "courseColor": "#10B981",
+    "date": "2024-12-15T16:30:00Z",
+    "duration": 90,
+    "notes": "Reviewed electromagnetic induction concepts and prepared lab report outline."
+  },
+  {
+    "Id": 3,
+    "courseId": "3",
+    "courseName": "Organic Chemistry",
+    "courseColor": "#F59E0B",
+    "date": "2024-12-14T10:00:00Z",
+    "duration": 150,
+    "notes": "Studied reaction mechanisms and practiced drawing molecular structures."
+  },
+  {
+    "Id": 4,
+    "courseId": "4",
+    "courseName": "Computer Science",
+    "courseColor": "#8B5CF6",
+    "date": "2024-12-13T19:00:00Z",
+    "duration": 180,
+    "notes": "Worked on binary search tree implementation. Completed insert and search methods."
+  },
+  {
+    "Id": 5,
+    "courseId": "5",
+    "courseName": "English Literature",
+    "courseColor": "#EC4899",
+    "date": "2024-12-12T15:00:00Z",
+    "duration": 75,
+    "notes": "Read Victorian poetry selections and took notes on recurring themes."
+  }
+]

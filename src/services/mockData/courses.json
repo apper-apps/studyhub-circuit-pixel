@@ -1,0 +1,164 @@
+[
+  {
+    "Id": 1,
+    "name": "Advanced Mathematics",
+    "code": "MATH301",
+    "color": "#5B5FDE",
+    "term": "Fall 2024",
+    "credits": 4,
+    "currentGrade": 92,
+    "assignmentCount": 8,
+    "gradeCategories": [
+      {
+        "id": "1",
+        "name": "Homework",
+        "weight": 30
+      },
+      {
+        "id": "2", 
+        "name": "Midterms",
+        "weight": 35
+      },
+      {
+        "id": "3",
+        "name": "Final Exam",
+        "weight": 35
+      }
+    ]
+  },
+  {
+    "Id": 2,
+    "name": "Physics Laboratory",
+    "code": "PHYS201",
+    "color": "#10B981",
+    "term": "Fall 2024",
+    "credits": 3,
+    "currentGrade": 87,
+    "assignmentCount": 12,
+    "gradeCategories": [
+      {
+        "id": "4",
+        "name": "Lab Reports",
+        "weight": 50
+      },
+      {
+        "id": "5",
+        "name": "Quizzes",
+        "weight": 25
+      },
+      {
+        "id": "6",
+        "name": "Final Project",
+        "weight": 25
+      }
+    ]
+  },
+  {
+    "Id": 3,
+    "name": "Organic Chemistry",
+    "code": "CHEM250",
+    "color": "#F59E0B",
+    "term": "Fall 2024", 
+    "credits": 4,
+    "currentGrade": 78,
+    "assignmentCount": 6,
+    "gradeCategories": [
+      {
+        "id": "7",
+        "name": "Problem Sets",
+        "weight": 40
+      },
+      {
+        "id": "8",
+        "name": "Lab Practicum",
+        "weight": 30
+      },
+      {
+        "id": "9",
+        "name": "Final Exam",
+        "weight": 30
+      }
+    ]
+  },
+  {
+    "Id": 4,
+    "name": "Computer Science",
+    "code": "CS150",
+    "color": "#8B5CF6",
+    "term": "Fall 2024",
+    "credits": 3,
+    "currentGrade": 95,
+    "assignmentCount": 10,
+    "gradeCategories": [
+      {
+        "id": "10",
+        "name": "Programming Projects",
+        "weight": 60
+      },
+      {
+        "id": "11",
+        "name": "Midterm Exam",
+        "weight": 20
+      },
+      {
+        "id": "12",
+        "name": "Final Exam",
+        "weight": 20
+      }
+    ]
+  },
+  {
+    "Id": 5,
+    "name": "English Literature",
+    "code": "ENG200",
+    "color": "#EC4899",
+    "term": "Fall 2024",
+    "credits": 3,
+    "currentGrade": 85,
+    "assignmentCount": 5,
+    "gradeCategories": [
+      {
+        "id": "13",
+        "name": "Essays",
+        "weight": 50
+      },
+      {
+        "id": "14",
+        "name": "Discussion Participation",
+        "weight": 20
+      },
+      {
+        "id": "15",
+        "name": "Final Paper",
+        "weight": 30
+      }
+    ]
+  },
+  {
+    "Id": 6,
+    "name": "Statistics",
+    "code": "STAT101",
+    "color": "#14B8A6",
+    "term": "Fall 2024",
+    "credits": 3,
+    "currentGrade": 89,
+    "assignmentCount": 7,
+    "gradeCategories": [
+      {
+        "id": "16",
+        "name": "Assignments",
+        "weight": 40
+      },
+      {
+        "id": "17",
+        "name": "Midterm",
+        "weight": 30
+      },
+      {
+        "id": "18",
+        "name": "Final Exam",
+        "weight": 30
+      }
+    ]
+  }
+]
